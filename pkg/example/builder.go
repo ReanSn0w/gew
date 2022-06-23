@@ -13,23 +13,31 @@ func NewBuilder() *Builder {
 
 type Builder struct{}
 
-func (b *Builder) Build(context context.Context, item view.View) []byte {
-	switch v := item.(type) {
-	case *view.EmptyView, nil:
+func (b *Builder) Build(ctx context.Context, item view.View) []byte {
+	buffer := new(bytes.Buffer)
+
+	view.Build(item, ctx, func(i interface{}, ctx context.Context) {
+		val := b.externalBuilder(i)
+		buffer.Write(val)
+	})
+
+	return buffer.Bytes()
+}
+
+func (b *Builder) externalBuilder(value interface{}) []byte {
+	res, even := value.(string)
+
+	if even {
+		return []byte(res)
+	} else {
 		return []byte{}
-	case *view.TextView:
-		return []byte(v.Text)
-	case *view.GroupView:
-		buffer := new(bytes.Buffer)
-
-		for _, item := range v.Elements {
-			buffer.Write(b.Build(context, item))
-		}
-
-		return buffer.Bytes()
-	case *view.ContextedView:
-		return b.Build(v.UpdateContext(context), v.Body(context))
-	default:
-		return b.Build(context, item.Body(context))
 	}
+}
+
+func Text(value string) view.View {
+	return view.External(value)
+}
+
+func WrongView() view.View {
+	return view.External(nil)
 }

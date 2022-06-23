@@ -11,7 +11,7 @@ import (
 func Test_BuildEmpty(t *testing.T) {
 	b := example.NewBuilder()
 
-	res := b.Build(context.Background(), view.Empty())
+	res := b.Build(context.Background(), nil)
 	if string(res) != "" {
 		t.Log("error: пустой view сгенерировал результат")
 		t.FailNow()
@@ -23,7 +23,7 @@ func Test_BuildText(t *testing.T) {
 	b := example.NewBuilder()
 
 	for index := 0; index < len(data); index++ {
-		res := b.Build(context.Background(), view.Text(data[index]))
+		res := b.Build(context.Background(), example.Text(data[index]))
 
 		if string(res) != data[index] {
 			t.Log("error: значение не сошлось с указанным в массиве")
@@ -33,77 +33,20 @@ func Test_BuildText(t *testing.T) {
 }
 
 func Test_BuildGroup(t *testing.T) {
-	data := []string{"11111", "22222", "33333", "11223", "32132"}
+	data := []string{"11111", "22222", "33333", "11223", "32132", ""}
 	b := example.NewBuilder()
 
 	for index := 0; index < len(data); index++ {
 		views := make([]view.View, 0, len(data[index]))
 		for _, el := range data[index] {
-			views = append(views, view.Text(string(el)))
+			views = append(views, example.Text(string(el)))
 		}
 
 		res := b.Build(context.Background(), view.Group(views...))
-		if string(res) != data[index] {
+		resStr := string(res)
+		if resStr != data[index] {
 			t.Log("error: не удалось построить строку через группу")
 			t.FailNow()
-		}
-	}
-}
-
-func Test_BuildEmptyGroup(t *testing.T) {
-	b := example.NewBuilder()
-
-	res := b.Build(context.Background(), view.Group())
-	if string(res) != "" {
-		t.Log("error: построение пустой группы завершилось неудачей")
-	}
-}
-
-func Test_BuildFor(t *testing.T) {
-	data := []string{"11111", "22222", "33333", "11223", "32132"}
-	b := example.NewBuilder()
-
-	for index := 0; index < len(data); index++ {
-		res := b.Build(context.Background(), view.For(uint(len(data[index])), func(i int) view.View {
-			return view.Text(string(data[index][i]))
-		}))
-		if string(res) != data[index] {
-			t.Log("error: не удалось построить строку через группу")
-			t.FailNow()
-		}
-	}
-}
-
-func Test_BuildIf(t *testing.T) {
-	type TestItem struct {
-		state bool
-		value string
-	}
-
-	data := []TestItem{
-		{
-			state: true,
-			value: "some string 1",
-		},
-		{
-			state: false,
-			value: "some string 2",
-		},
-	}
-	b := example.NewBuilder()
-
-	for _, item := range data {
-		res := b.Build(context.Background(), view.If(item.state, view.Text(item.value)))
-		if item.state {
-			if string(res) != item.value {
-				t.Log("error: результат отличается от необходимого в данно состоянии")
-				t.FailNow()
-			}
-		} else {
-			if string(res) != "" {
-				t.Log("error: результат отличается от необходимого в данно состоянии")
-				t.FailNow()
-			}
 		}
 	}
 }
@@ -114,7 +57,7 @@ func Test_BuildClosure(t *testing.T) {
 
 	for index := 0; index < len(data); index++ {
 		res := b.Build(context.Background(), view.Closure(func(context context.Context) view.View {
-			return view.Text(data[index])
+			return example.Text(data[index])
 		}))
 
 		if string(res) != data[index] {
@@ -135,7 +78,17 @@ func Test_BuildContexted(t *testing.T) {
 				t.FailNow()
 			}
 
-			return view.Empty()
+			return nil
 		})))
+	}
+}
+
+func Test_BuildWrongView(t *testing.T) {
+	b := example.NewBuilder()
+
+	res := b.Build(context.Background(), example.WrongView())
+	if len(res) != 0 {
+		t.Log("error: в данном тесте bilder не должен возвращать значения")
+		t.FailNow()
 	}
 }
