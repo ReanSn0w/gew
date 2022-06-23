@@ -3,13 +3,13 @@ package view
 import "context"
 
 func Group(elements ...View) View {
-	return &GroupView{Elements: elements}
+	return &group{elements: elements}
 }
 
-type GroupView struct {
-	Elements []View
+type group struct {
+	elements []View
 }
 
-func (gv *GroupView) Body(context context.Context) View {
+func (gv *group) Body(context context.Context) View {
 	return nil
 }
