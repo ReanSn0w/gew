@@ -23,6 +23,10 @@ func Build(item View, ctx context.Context, ext func(interface{}, context.Context
 	case *external:
 		ext(v.content, ctx)
 	default:
-		Build(v.Body(ctx), ctx, ext)
+		if v, ok := item.(View); ok {
+			Build(v.Body(ctx), ctx, ext)
+		} else {
+			ext(item, ctx)
+		}
 	}
 }
