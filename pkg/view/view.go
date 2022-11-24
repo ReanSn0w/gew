@@ -20,7 +20,7 @@ func Build(item View, ctx context.Context, ext func(interface{}, context.Context
 	case *contexted:
 		newCtx := v.prepare(ctx)
 		Build(v.Body(newCtx), newCtx, ext)
-	case *external:
+	case *ExternalContent:
 		ext(v.content, ctx)
 	default:
 		if v, ok := item.(View); ok {

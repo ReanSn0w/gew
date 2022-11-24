@@ -3,15 +3,15 @@ package view
 import "context"
 
 func External(content interface{}) View {
-	return &external{
+	return &ExternalContent{
 		content: content,
 	}
 }
 
-type external struct {
+type ExternalContent struct {
 	content interface{}
 }
 
-func (view *external) Body(ctx context.Context) View {
+func (view *ExternalContent) Body(ctx context.Context) View {
 	return nil
 }
