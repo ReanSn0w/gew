@@ -4,12 +4,12 @@ import "context"
 
 func External(content interface{}) View {
 	return &ExternalContent{
-		content: content,
+		Content: content,
 	}
 }
 
 type ExternalContent struct {
-	content interface{}
+	Content interface{}
 }
 
 func (view *ExternalContent) Body(ctx context.Context) View {
