@@ -13,8 +13,8 @@ func Build(item View, ctx context.Context, ext func(interface{}, context.Context
 	switch v := item.(type) {
 	case nil:
 		return
-	case *group:
-		for _, item := range v.elements {
+	case group:
+		for _, item := range v {
 			Build(item, ctx, ext)
 		}
 	case *contexted:
@@ -23,10 +23,6 @@ func Build(item View, ctx context.Context, ext func(interface{}, context.Context
 	case *ExternalContent:
 		ext(v.Content, ctx)
 	default:
-		if v, ok := item.(View); ok {
-			Build(v.Body(ctx), ctx, ext)
-		} else {
-			ext(item, ctx)
-		}
+		Build(v.Body(ctx), ctx, ext)
 	}
 }

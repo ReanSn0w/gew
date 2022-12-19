@@ -1,11 +1,14 @@
 package view
 
-import "context"
+import (
+	"context"
+)
 
-func External(content interface{}) View {
-	return &ExternalContent{
+// External - служит для добавления своих компонентов в пайплайн построения view
+func External(content interface{}) ModificationApplyer {
+	return NewModificationApplyer(&ExternalContent{
 		Content: content,
-	}
+	})
 }
 
 type ExternalContent struct {

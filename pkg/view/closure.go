@@ -2,13 +2,24 @@ package view
 
 import "context"
 
-func Closure(builder func(context.Context) View) View {
-	return &closureView{
+// Closure возвращает View, функции переданной в нее в качестве аргумента.
+//
+// Через данную функцию реализованы такие функции как:
+// For
+func Closure(builder func(context.Context) View) ModificationApplyer {
+	return NewModificationApplyer(&closureView{
 		builder: builder,
-	}
+	})
 }
 
-func For(count uint, builder func(int) View) View {
+// For возвращает View, который содержит count элементов, созданных функцией builder.
+func For(count int, builder func(int) View) ModificationApplyer {
+	// Исключение для нулевого количества элементов.
+	// Так же оно сработает в случае если count < 0.
+	if count < 1 {
+		return Group()
+	}
+
 	return Closure(func(ctx context.Context) View {
 		items := make([]View, 0, count)
 
@@ -17,16 +28,6 @@ func For(count uint, builder func(int) View) View {
 		}
 
 		return Group(items...)
-	})
-}
-
-func If(value bool, content View) View {
-	return Closure(func(ctx context.Context) View {
-		if value {
-			return content
-		} else {
-			return nil
-		}
 	})
 }
 
