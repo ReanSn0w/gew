@@ -59,3 +59,40 @@ type contexted struct {
 func (cv *contexted) Body(context context.Context) View {
 	return cv.content
 }
+
+// BuildModificator - группа модификаторов для управления построением
+
+// Модификатор для опционального применения модификаторов
+func If(condition bool, modificators ...Modificator) Modificator {
+	if condition {
+		return func(v View) View {
+			for _, modificator := range modificators {
+				v = modificator(v)
+			}
+
+			return v
+		}
+	}
+
+	return func(v View) View {
+		return v
+	}
+}
+
+// Hidden - модификатор позволяет скрыть элемент View из построения.
+func Hidden(condition bool) Modificator {
+	return func(view View) View {
+		if !condition {
+			return view
+		}
+
+		return nil
+	}
+}
+
+// Replace - заменяет элемент View на другой.
+func Replace(view View) Modificator {
+	return func(_ View) View {
+		return view
+	}
+}

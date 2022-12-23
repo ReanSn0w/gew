@@ -9,8 +9,8 @@ import (
 )
 
 func TestIfTrue(t *testing.T) {
-	hello := view.If(true)(
-		Text("Hello"),
+	hello := Text("Hello")(
+		view.Hidden(false),
 	)
 
 	val := StringBuilder(hello) // Hello
@@ -21,14 +21,50 @@ func TestIfTrue(t *testing.T) {
 }
 
 func TestIfFalse(t *testing.T) {
-	hello := view.If(false)(
-		Text("Hello"),
+	hello := Text("Hello")(
+		view.Hidden(true),
 	)
 
 	val := StringBuilder(hello) // ""
 
 	if val != "" {
 		t.Error("If(false) not working")
+	}
+}
+
+func TestReplace(t *testing.T) {
+	hello := Text("Hello")(
+		view.Replace(Text("World")),
+	)
+
+	val := StringBuilder(hello) // World
+
+	if val != "World" {
+		t.Error("Replace not working")
+	}
+}
+
+func TestIfReplace(t *testing.T) {
+	hello := Text("Hello")(
+		view.If(true, view.Replace(Text("World"))),
+	)
+
+	val := StringBuilder(hello) // World
+
+	if val != "World" {
+		t.Error("IfReplace not working")
+	}
+}
+
+func TestIfReplaceFalse(t *testing.T) {
+	hello := Text("Hello")(
+		view.If(false, view.Replace(Text("World"))),
+	)
+
+	val := StringBuilder(hello) // Hello
+
+	if val != "Hello" {
+		t.Error("IfReplaceFalse not working")
 	}
 }
 
