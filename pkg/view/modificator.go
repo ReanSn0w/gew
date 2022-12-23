@@ -12,6 +12,10 @@ type Modificator func(View) View
 func NewModificationApplyer(view View) ModificationApplyer {
 	return func(modificators ...Modificator) View {
 		for _, modificator := range modificators {
+			if modificator == nil {
+				continue
+			}
+
 			view = modificator(view)
 		}
 

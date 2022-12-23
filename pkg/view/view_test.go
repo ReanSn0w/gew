@@ -158,6 +158,21 @@ func TestNil(t *testing.T) {
 	}
 }
 
+func TestNilModificator(t *testing.T) {
+	hello := view.Group(
+		Text("Hello"),
+		Text("World")(
+			nil,
+		),
+	)
+
+	val := StringBuilder(hello) // HelloWorld
+
+	if val != "HelloWorld" {
+		t.Error("nil modificator not working")
+	}
+}
+
 // MARK: - TextBuilder
 
 func Text(text string) view.ModificationApplyer {
