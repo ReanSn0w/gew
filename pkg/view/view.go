@@ -22,6 +22,12 @@ func Build(item View, ctx context.Context, ext func(interface{}, context.Context
 		Build(v.Body(newCtx), newCtx, ext)
 	case *ExternalContent:
 		ext(v.Content, ctx)
+	case ModificationApplyer:
+		if v == nil {
+			return
+		}
+
+		Build(v.Body(ctx), ctx, ext)
 	default:
 		Build(v.Body(ctx), ctx, ext)
 	}
