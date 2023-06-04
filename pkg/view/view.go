@@ -2,6 +2,7 @@ package view
 
 import (
 	"context"
+	"log"
 )
 
 // Text, Empty, Group
@@ -10,6 +11,12 @@ type View interface {
 }
 
 func Build(item View, ctx context.Context, ext func(interface{}, context.Context)) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("[ERROR] gew: %v", item)
+		}
+	}()
+
 	switch v := item.(type) {
 	case nil:
 		return
