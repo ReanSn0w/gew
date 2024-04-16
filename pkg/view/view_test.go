@@ -5,7 +5,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ReanSn0w/gew/v2/pkg/view"
+	"github.com/ReanSn0w/gew/v3/pkg/view"
 )
 
 func TestIfTrue(t *testing.T) {
@@ -175,15 +175,15 @@ func TestNilModificator(t *testing.T) {
 
 // MARK: - TextBuilder
 
-func Text(text string) view.ModificationApplyer {
+func Text(text string) view.Use {
 	return view.External(text)
 }
 
 func StringBuilder(item view.View) string {
 	buffer := new(bytes.Buffer)
 
-	view.Build(item, context.TODO(), func(item interface{}, ctx context.Context) {
-		buffer.WriteString(item.(string))
+	view.Builder(context.TODO(), item, func(ctx context.Context, i interface{}) {
+		buffer.WriteString(i.(string))
 	})
 
 	return buffer.String()
