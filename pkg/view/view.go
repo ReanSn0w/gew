@@ -5,12 +5,21 @@ import (
 )
 
 type (
+	// Mod это функция, которая принимает View
+	// и возвращает View. Данный тип служит для модификации
+	// View в своем теле.
+	Mod func(View) View
+
+	// Use это функция, которая применяет модификации ко View.
+	Use func(args ...Mod) View
+
 	// View является еденицей в системе построения gew
 	//
 	// В стандартной поставке в вашем распоряжжении находится
 	// несколько таких элементов:
 	// - Group для группировки нескольких view в один
 	// - Closure выполняющий действие над view
+	// - External для обертки внешних значений в View
 	View interface {
 		Body(context.Context) View
 	}
@@ -45,28 +54,18 @@ func Closure(builder func(context.Context) View) Use {
 //
 // Код написанный ниже отвечает за модификации View
 
-type (
-	// Mod это функция, которая принимает View
-	// и возвращает View. Данный тип служит для модификации
-	// View в своем теле.
-	Mod func(View) View
-
-	// Use это функция, которая применяет модификации ко View.
-	Use func(args ...Mod) View
-)
-
 // NewView Возвращает функцию, которая
 // соответствует интерфейсу View.
 //
 // Она предназначена для удоного применения модификаторов к View.
 func NewView(view View) Use {
 	return func(args ...Mod) View {
-		for _, modificator := range args {
-			if modificator == nil {
+		for i := len(args) - 1; i >= 0; i-- {
+			if args[i] == nil {
 				continue
 			}
 
-			view = modificator(view)
+			view = args[i](view)
 		}
 
 		return view
@@ -78,22 +77,8 @@ func (a Use) Body(ctx context.Context) View {
 	return a()
 }
 
-// Context - Добавляет значения в контекст построения View.
-func Context(key, value interface{}) Mod {
-	return func(view View) View {
-		return &contexted{
-			content: view,
-			prepare: func(ctx context.Context) context.Context {
-				return context.WithValue(ctx, key, value)
-			},
-		}
-	}
-}
-
-// ContextModificator - позволяет изменить контекст построения View.
-func ContextModificator(
-	prepare func(ctx context.Context) context.Context,
-) Mod {
+// Context - позволяет изменить контекст построения View.
+func Context(prepare func(ctx context.Context) context.Context) Mod {
 	return func(view View) View {
 		return &contexted{
 			content: view,

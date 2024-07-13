@@ -117,14 +117,17 @@ func TestViewBuilderWithValues(t *testing.T) {
 	}
 }
 
-func TestContextModificator(t *testing.T) {
+func TestContext(t *testing.T) {
 	res := false
 	key := "k"
 
 	hello := view.Group(
 		Text("Hello"),
 		Text("World")(
-			view.ContextModificator(func(ctx context.Context) context.Context {
+			view.Context(func(ctx context.Context) context.Context {
+				return context.WithValue(ctx, &key, "value")
+			}),
+			view.Context(func(ctx context.Context) context.Context {
 				val, ok := ctx.Value(&key).(string)
 
 				if val == "value" && ok {
@@ -133,7 +136,6 @@ func TestContextModificator(t *testing.T) {
 
 				return ctx
 			}),
-			view.Context(&key, "value"),
 		),
 	)
 
