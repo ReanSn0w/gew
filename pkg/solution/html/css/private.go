@@ -3,21 +3,33 @@ package css
 import "bytes"
 
 type (
-	group struct {
+	selector struct {
 		selector string
-		block    []Style
+		blocks   []Style
+	}
+
+	group struct {
+		block []Style
 	}
 
 	rules map[string]string
 )
 
-func (g *group) Style() []byte {
+func (g *selector) Style() []byte {
 	buffer := new(bytes.Buffer)
 	buffer.WriteString(g.selector + "{")
-	for _, block := range g.block {
+	for _, block := range g.blocks {
 		buffer.Write(block.Style())
 	}
 	buffer.WriteString("}")
+	return buffer.Bytes()
+}
+
+func (g *group) Style() []byte {
+	buffer := new(bytes.Buffer)
+	for _, block := range g.block {
+		buffer.Write(block.Style())
+	}
 	return buffer.Bytes()
 }
 

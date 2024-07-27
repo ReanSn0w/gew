@@ -24,9 +24,15 @@ func Rules(pairs ...pair) Style {
 	return r
 }
 
-func Group(selector string, blocks ...Style) Style {
+func Selector(s string, blocks ...Style) Style {
+	return &selector{
+		selector: s,
+		blocks:   blocks,
+	}
+}
+
+func Group(blocks ...Style) Style {
 	return &group{
-		selector: selector,
-		block:    blocks,
+		block: blocks,
 	}
 }
