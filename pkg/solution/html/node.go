@@ -38,7 +38,7 @@ func (n *Node) build(ctx context.Context, wr io.Writer) {
 		wr.Write([]byte(fmt.Sprintf("<%v>", n.tag)))
 	}
 
-	Build(ctx, wr, n.content)
+	Build(attr.Setup(ctx), wr, n.content)
 
 	wr.Write([]byte(fmt.Sprintf("</%v>", n.tag)))
 }
