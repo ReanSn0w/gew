@@ -1,6 +1,6 @@
 package html
 
-import "github.com/ReanSn0w/gew/v3/pkg/view"
+import "github.com/ReanSn0w/gew/v4/pkg/view"
 
 // Doctype generates a <!DOCTYPE html> declaration.
 func Doctype() view.View {

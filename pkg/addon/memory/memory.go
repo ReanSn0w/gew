@@ -3,7 +3,7 @@ package memory
 import (
 	"context"
 
-	"github.com/ReanSn0w/gew/v3/pkg/view"
+	"github.com/ReanSn0w/gew/v4/pkg/view"
 )
 
 var (

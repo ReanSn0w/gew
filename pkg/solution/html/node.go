@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/ReanSn0w/gew/v3/pkg/solution/html/attr"
-	"github.com/ReanSn0w/gew/v3/pkg/view"
+	"github.com/ReanSn0w/gew/v4/pkg/solution/html/attr"
+	"github.com/ReanSn0w/gew/v4/pkg/view"
 )
 
 type (

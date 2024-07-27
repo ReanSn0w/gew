@@ -5,7 +5,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ReanSn0w/gew/v3/pkg/view"
+	"github.com/ReanSn0w/gew/v4/pkg/view"
 )
 
 func TestIfTrue(t *testing.T) {
